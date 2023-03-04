@@ -12,6 +12,7 @@ namespace OrdersApiApp.Service.OrderService
 
         // Task<> GetOrderInfo(int id);
         // Task<> GetBill(int id);
+
         // Как типизировать запрос на чек и информацию о заказе?
     }
 }
