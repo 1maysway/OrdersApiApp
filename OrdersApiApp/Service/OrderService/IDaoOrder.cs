@@ -1,4 +1,5 @@
 ﻿using OrdersApiApp.Model.Entity;
+using OrdersApiApp.Service.OrderService.Entity;
 
 namespace OrdersApiApp.Service.OrderService
 {
@@ -9,10 +10,6 @@ namespace OrdersApiApp.Service.OrderService
         Task<Order> AddOrder(Order order);
         Task<Order> UpdateOrder(Order updatedOrder);
         Task<bool> DeleteOrder(int id);
-
-        // Task<> GetOrderInfo(int id);
-        // Task<> GetBill(int id);
-
-        // Как типизировать запрос на чек и информацию о заказе?
+        Task<OrderInfo> GetOrderInfo(int id);
     }
 }

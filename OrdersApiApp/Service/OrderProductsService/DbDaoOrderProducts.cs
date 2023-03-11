@@ -13,10 +13,11 @@ namespace OrdersApiApp.Service.OrderProductsService
             this.context = context;
         }
 
-        public async Task<OrderProducts> AddOrderProducts(OrderProducts orderProduct)
+        public async Task<OrderProducts> AddOrderProducts(OrderProducts orderProducts)
         {
-            await context.OrderProducts.AddAsync(orderProduct);
-            return orderProduct;
+            await context.OrderProducts.AddAsync(orderProducts);
+            await context.SaveChangesAsync();
+            return orderProducts;
         }
 
         public async Task<bool> DeleteOrderProducts(int id)

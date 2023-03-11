@@ -79,6 +79,11 @@ app.MapPost("/orders/delete/{id}", async (int id, HttpContext context, IDaoOrder
     return await dao.DeleteOrder(id);
 });
 
+app.MapGet("/orders/{id}/info", async (int id, HttpContext context, IDaoOrder dao) =>
+{
+    return await dao.GetOrderInfo(id);
+});
+
 /// Products routes
 
 app.MapPost("/products/add", async (HttpContext context, Product product, IDaoProduct dao) =>
