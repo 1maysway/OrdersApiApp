@@ -8,7 +8,6 @@
         public float Price { get; set; }
         public int QuantityInStock { get; set; }
 
-
         public override string ToString()
         {
             return $"{Id} - {Title} - {Price}";
