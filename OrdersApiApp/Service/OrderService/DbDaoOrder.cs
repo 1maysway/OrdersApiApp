@@ -23,12 +23,9 @@ namespace OrdersApiApp.Service.OrderService
 
         public async Task<bool> DeleteOrder(int id)
         {
-            Console.WriteLine("ORDERS -- DELETE");
-            Console.WriteLine("Id => "+id);
             Order order = await context.Orders.FirstOrDefaultAsync((ord) => ord.Id==id);
             if(order != null)
             {
-                Console.WriteLine("Order is not null.");
                 context.Remove(order);
                 await context.SaveChangesAsync();
             }
@@ -55,11 +52,7 @@ namespace OrdersApiApp.Service.OrderService
 
         public async Task<OrderInfo> GetOrderInfo(int id)
         {
-            Console.WriteLine("Order - Getting Order Info");
-
             OrderProducts[] orderProducts = context.OrderProducts.Where(op => op.OrderId == id).ToArray();
-            //Product[] products = await orderProducts.Select(async op => await context.Products.FirstOrDefaultAsync(p => p.Id == op.ProductId));
-
             await context.Products.LoadAsync();
 
             OrderInfo reciept = new OrderInfo(orderProducts.Select(op => new ProductForOrderInfo(
