@@ -3,7 +3,7 @@
 https://ordersapiapp-maysway.amvera.io/orders/all
 
 
-Clients routes:
+**Clients routes**:
 
 GET  /clients/all
 GET  /clients/{id}
@@ -12,7 +12,7 @@ POST /clients/update
 POST /clients/delete/{id}
 
 
-Orders routes:
+**Orders routes**:
 
 GET  /orders/all
 GET  /orders/{id}
@@ -22,7 +22,7 @@ POST /orders/delete/{id}
 GET  /orders/{id}/info
 
 
-Products routes:
+**Products routes**:
 
 GET  /products/all
 GET  /products/{id}
@@ -31,7 +31,7 @@ POST /products/update
 POST /products/delete/{id}
 
 
-OrderProducts routes:
+**OrderProducts routes**:
 
 GET  /orderProducts/all
 GET  /orderProducts/{id}
