@@ -14,7 +14,7 @@ https://ordersapiapp-maysway.amvera.io/orders/all
 
 **Orders routes**:
 
-* GET  */orders/all**
+* GET  */orders/all*
 * GET  */orders/{id}*
 * POST */orders/add*
 * POST */orders/update*
