@@ -5,11 +5,11 @@ https://ordersapiapp-maysway.amvera.io/orders/all
 
 **Clients routes**:
 
-* GET  /clients/all
-* GET  /clients/{id}
-* POST /clients/add
-* POST /clients/update
-* POST /clients/delete/{id}
+* GET  */clients/all*
+* GET  */clients/{id}*
+* POST */clients/add*
+* POST */clients/update*
+* POST */clients/delete/{id}*
 
 
 **Orders routes**:
