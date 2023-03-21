@@ -9,5 +9,6 @@ namespace OrdersApiApp.Service.ClientService
         Task<Client> AddClient(Client client);
         Task<Client> UpdateClient(Client updatedClient);
         Task<bool> DeleteClient(int id);
+        Task<Client> GetClientByUsername(string username);
     }
 }

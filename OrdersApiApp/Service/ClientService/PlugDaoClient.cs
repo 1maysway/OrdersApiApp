@@ -29,6 +29,11 @@ namespace OrdersApiApp.Service.ClientService
             throw new NotImplementedException();
         }
 
+        public Task<Client> GetClientByUsername(string username)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Client> UpdateClient(Client client)
         {
             throw new NotImplementedException();

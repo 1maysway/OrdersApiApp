@@ -32,6 +32,11 @@ namespace OrdersApiApp.Service.ClientService
             return client != null;
         }
 
+        public async Task<Client> GetClientByUsername(string username)
+        {
+            return await context.Clients.FirstOrDefaultAsync(client => client.Name == username);
+        }
+
         public async Task<List<Client>> GetAllClients()
         {
             return await context.Clients.ToListAsync();

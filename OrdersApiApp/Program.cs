@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using OrdersApiApp.Model;
 using OrdersApiApp.Model.Entity;
 using OrdersApiApp.Service.ClientService;
 using OrdersApiApp.Service.OrderProductsService;
 using OrdersApiApp.Service.OrderService;
 using OrdersApiApp.Service.ProductService;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +18,28 @@ builder.Services.AddTransient<IDaoClient, DbDaoClient>();
 builder.Services.AddTransient<IDaoOrder, DbDaoOrder>();
 builder.Services.AddTransient<IDaoProduct, DbDaoProduct>();
 builder.Services.AddTransient<IDaoOrderProducts, DbDaoOrderProducts>();
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            // указывает, будет ли валидироваться издатель при валидации токена
+            ValidateIssuer = true,
+            // строка, представляющая издателя
+            ValidIssuer = AuthOptions.ISSUER,
+            // будет ли валидироваться потребитель токена
+            ValidateAudience = true,
+            // установка потребителя токена
+            ValidAudience = AuthOptions.AUDIENCE,
+            // будет ли валидироваться время существования
+            ValidateLifetime = true,
+            // установка ключа безопасности
+            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+            // валидация ключа безопасности
+            ValidateIssuerSigningKey = true,
+        };
+    });
 
 
 builder.Services.AddDbContext<ApplicationDbContext>();
@@ -22,6 +50,37 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapPost("/login/{username}", async (string username, HttpContext context, IDaoClient dao) =>
+{
+
+    Client? client = await dao.GetClientByUsername(username);
+
+
+    var claims = new List<Claim> { new Claim(ClaimTypes.Name, client.Name) };
+    var jwt = new JwtSecurityToken(
+            issuer: AuthOptions.ISSUER,
+            audience: AuthOptions.AUDIENCE,
+            claims: claims,
+            expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)), // время действия 2 минуты
+            signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
+    var encodedJwt =  new JwtSecurityTokenHandler().WriteToken(jwt);
+
+    var response = new
+    {
+        access_token = encodedJwt,
+        username = client.Name
+    };
+
+    return Results.Json(response);
+});
 
 
 /// CLients routes
@@ -57,7 +116,7 @@ app.MapPost("/orders/add", async (HttpContext context, Order order, IDaoOrder da
     return await dao.AddOrder(order);
 });
 
-app.MapGet("/orders/all", async (HttpContext context, IDaoOrder dao) =>
+app.MapGet("/orders/all", [Authorize] async (HttpContext context, IDaoOrder dao) =>
 {
     return await dao.GetAllOrders();
 });
@@ -137,3 +196,12 @@ app.MapPost("/orderProducts/delete/{id}", async (int id, HttpContext context, ID
 });
 
 app.Run();
+
+public class AuthOptions
+{
+    public const string ISSUER = "MyAuthServer"; // издатель токена
+    public const string AUDIENCE = "MyAuthClient"; // потребитель токена
+    const string KEY = "mysupersecret_secretkey!123";   // ключ для шифрации
+    public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
+        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
+}
